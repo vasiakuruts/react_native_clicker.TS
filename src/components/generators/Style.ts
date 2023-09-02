@@ -2,25 +2,19 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   generators: {
-    width: "100%",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "rgba(255, 249, 215, 0.5)",
-    padding: 10,
+    flex: 1,
+    padding: 5,
   },
   generator_item: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
-    width: 80,
-    height: 60,
+    width: 40,
+    height: 40,
     backgroundColor: "rgba(79, 168, 82, 1)",
-    margin: 5,
+    margin: 20,
     fontSize: 18,
     fontWeight: 500,
+    padding: 5,
   },
   generator_item_level: {
     fontSize: 12,

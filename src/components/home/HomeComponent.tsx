@@ -5,6 +5,7 @@ import Scoreboard from "../scoreboard";
 import Stats from "../stats";
 import Generators from "../generators";
 import Controlls from "../controlls";
+import { IControls } from "../../../.expo/types/controlls";
 
 const GENERATOR_PRICE = 2;
 const CONTROLL_GENERATOR_PRICE = 2;
@@ -12,12 +13,12 @@ const GENERATORS_DELAY_MS = 5000;
 const GOLD_PRICE = 10000;
 
 export const HomeComponent: FC = (): JSX.Element => {
-  const [balance, setBalance] = useState(0);
-  const [goldBalance, setGoldBalance] = useState(0);
-  const [clickerPower, setClickerPower] = useState(1);
-  const [generatorsPower, setGeneratorsPower] = useState(1);
+  const [balance, setBalance] = useState<number>(50);
+  const [goldBalance, setGoldBalance] = useState<number>(0);
+  const [clickerPower, setClickerPower] = useState<number>(1);
+  const [generatorsPower, setGeneratorsPower] = useState<number>(1);
   const [generators, setGenerators] = useState<number[]>([]);
-  const [controlls, setControlls] = useState({});
+  const [controlls, setControlls] = useState<IControls>({});
 
   const handleClickerClick = useCallback(() => {
     setBalance(balance + clickerPower);
@@ -38,21 +39,24 @@ export const HomeComponent: FC = (): JSX.Element => {
       setBalance(balance - nextClickerPowerPrice);
       setClickerPower(clickerPower + 1);
     }
-  }, []);
+  }, [balance]);
 
   const handleBuyGeneratorClick = useCallback(() => {
     if (canBuyGenerator) {
       setBalance(balance - GENERATOR_PRICE);
       setGenerators([...generators, 1]);
     }
-  }, []);
+  }, [generators]);
 
-  const handleGeneratorClick = useCallback((generatorIndex: number) => {
-    setBalance(balance + generators[generatorIndex]);
-    const nextGenerators = Array.from(generators);
-    nextGenerators[generatorIndex] = 0;
-    setGenerators(nextGenerators);
-  }, []);
+  const handleGeneratorClick = useCallback(
+    (generatorIndex: number) => {
+      setBalance(balance + generators[generatorIndex]);
+      const nextGenerators = Array.from(generators);
+      nextGenerators[generatorIndex] = 0;
+      setGenerators(nextGenerators);
+    },
+    [generators]
+  );
 
   const handleBuyGoldClick = useCallback(() => {
     if (canBuyGold) {
@@ -120,19 +124,26 @@ export const HomeComponent: FC = (): JSX.Element => {
         </View>
         <Scoreboard goldBalance={goldBalance} balance={balance} />
       </View>
-      <Stats clickerPower={clickerPower} generatorsCount={generators.length} />
-      <Generators
-        generators={generators}
-        generatorsPower={generatorsPower}
-        handleClick={handleGeneratorClick}
-      />
-      <Controlls
-        controlls={controlls}
-        clickerPower={clickerPower}
-        onClickerClick={handleClickerClick}
-        onControllClick={handleControllClick}
-        canSumGenerators={canSumGenerators}
-      />
+      <View style={styles.score_components}>
+        <Stats
+          clickerPower={clickerPower}
+          generatorsCount={generators.length}
+        />
+        <Controlls
+          controlls={controlls}
+          clickerPower={clickerPower}
+          onClickerClick={handleClickerClick}
+          onControllClick={handleControllClick}
+          canSumGenerators={canSumGenerators}
+        />
+        <View style={styles.generators_wrapper}>
+          <Generators
+            generators={generators}
+            generatorsPower={generatorsPower}
+            handleClick={handleGeneratorClick}
+          />
+        </View>
+      </View>
       <View style={styles.content_wrapper}>
         <View style={styles.content_wrapper_item}>
           <Pressable
@@ -141,7 +152,7 @@ export const HomeComponent: FC = (): JSX.Element => {
             style={styles.button}
           >
             <Text>
-              Buy 1G {"\n"} (${GOLD_PRICE})
+              Купити золото {"\n"} (${GOLD_PRICE})
             </Text>
           </Pressable>
           <Pressable
@@ -150,7 +161,7 @@ export const HomeComponent: FC = (): JSX.Element => {
             style={styles.button}
           >
             <Text>
-              Buy +1 {"\n"} (${nextClickerPowerPrice})
+              Купити силу +1 {"\n"} (${nextClickerPowerPrice})
             </Text>
           </Pressable>
         </View>
@@ -161,7 +172,7 @@ export const HomeComponent: FC = (): JSX.Element => {
             style={styles.button}
           >
             <Text>
-              Buy Generator{"\n"} (${GENERATOR_PRICE})
+              Купити Генератор {"\n"} (${GENERATOR_PRICE})
             </Text>
           </Pressable>
           <Pressable
@@ -170,7 +181,7 @@ export const HomeComponent: FC = (): JSX.Element => {
             style={styles.button}
           >
             <Text>
-              Buy Generator Controll {"\n"} (${CONTROLL_GENERATOR_PRICE})
+              Купити Управління генератором {"\n"} (${CONTROLL_GENERATOR_PRICE})
             </Text>
           </Pressable>
         </View>

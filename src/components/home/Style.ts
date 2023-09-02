@@ -3,27 +3,23 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   App: {
     width: "100%",
-    height: 180,
-    display: "flex",
     flex: 1,
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     overflow: "hidden",
   },
 
   score_wrapper: {
+    flex: 0.25,
     width: "100%",
-    height: 150,
-    display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "rgba(188, 224, 208, 1)",
   },
 
   score_title: {
-    display: "flex",
     justifyContent: "center",
     alignItems: "center",
     fontSize: 26,
@@ -31,31 +27,42 @@ export const styles = StyleSheet.create({
     color: "rgba(0,0,0,0.6)",
   },
 
+  score_components: {
+    flex: 0.4,
+    width: "100%",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  generators_wrapper: {
+    flex: 1,
+    width: "84%",
+    height: "50%",
+    backgroundColor: "yellow",
+  },
+
   content_wrapper: {
-    width: "87%",
-    height: "60%",
+    flex: 0.4,
+    width: "auto",
+    height: "auto",
   },
   content_wrapper_item: {
     display: "flex",
-    width: "-80%",
-    height: "-40%",
     flexDirection: "row",
   },
 
   button: {
-    flexDirection: "column",
     width: 150,
-    height: 80,
-    borderRadius: 4,
-    backgroundColor: "rgba(0,0,0,0.7)",
-    color: "#fff",
+    height: 70,
+    borderRadius: 20,
+    backgroundColor: "green",
+    justifyContent: "center",
+    alignItems: "center",
+    color: "white",
     fontSize: 18,
     margin: 4,
-    outline: "none",
-    cursor: "pointer",
-  },
-
-  "button:disabled": {
-    backgroundColor: "rgba(0,0,0,0.1)",
+    disabled: {
+      backgroundColor: "green",
+    },
   },
 });

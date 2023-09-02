@@ -6,13 +6,17 @@ import { IGeneratorsProps } from "../../../.expo/types/generators";
 export default function Generators(props: IGeneratorsProps) {
   const { generators, handleClick, generatorsPower } = props;
   return (
-    <View className="generators">
+    <View style={styles.generators}>
       <Text>
         {generators &&
           generators.map((it, index) => (
             <Pressable
               key={`generator${index}`}
-              onPress={() => handleClick(index)}
+              onPress={() => {
+                console.log("====================================");
+                console.log(index);
+                console.log("====================================");
+              }}
               style={styles.generator_item}
             >
               <View style={styles.generator_item_level}>
@@ -27,4 +31,4 @@ export default function Generators(props: IGeneratorsProps) {
     </View>
   );
 }
-// backgroundColor: `rgba(0,${it < 256 ? it : 255},0)`
+// { backgroundColor: `rgba(0,${it < 256 ? it : 255},0)` }
