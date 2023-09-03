@@ -24,8 +24,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
+    paddingTop: 10,
     fontSize: 26,
-    color: "rgba(0,0,0,0.6)",
+    fontFamily: "orbitron-bold",
   },
 
   score_components: {
@@ -50,6 +51,7 @@ export const styles = StyleSheet.create({
   content_wrapper_item: {
     display: "flex",
     flexDirection: "row",
+    justifyContent: "center",
   },
 
   button: {

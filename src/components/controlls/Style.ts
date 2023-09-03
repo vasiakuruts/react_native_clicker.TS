@@ -26,4 +26,8 @@ export const styles = StyleSheet.create({
     outline: "none",
     cursor: "pointer",
   },
+  titleText: {
+    fontSize: 16,
+    fontFamily: "orbitron-regular",
+  },
 });
