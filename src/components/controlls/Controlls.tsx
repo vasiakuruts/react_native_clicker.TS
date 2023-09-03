@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, Pressable } from "react-native";
 import { styles } from "./Style";
-import { IControllsProps } from "../../../.expo/types/controlls";
+import { IControllsProps } from "../../../assets/types/controlls";
 
 export default function Controlls(props: IControllsProps) {
   const {

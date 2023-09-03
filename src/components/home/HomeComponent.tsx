@@ -5,7 +5,7 @@ import Scoreboard from "../scoreboard";
 import Stats from "../stats";
 import Generators from "../generators";
 import Controlls from "../controlls";
-import { IControls } from "../../../.expo/types/controlls";
+import { IControls } from "../../../assets/types/controlls";
 
 const GENERATOR_PRICE = 2;
 const CONTROLL_GENERATOR_PRICE = 2;
@@ -120,7 +120,7 @@ export const HomeComponent: FC = (): JSX.Element => {
     <View style={styles.App}>
       <View style={styles.score_wrapper}>
         <View style={styles.score_title}>
-          <Text>Balance</Text>
+          <Text style={styles.titleText}>Balance</Text>
         </View>
         <Scoreboard goldBalance={goldBalance} balance={balance} />
       </View>
@@ -149,7 +149,12 @@ export const HomeComponent: FC = (): JSX.Element => {
           <Pressable
             onPress={handleBuyGoldClick}
             disabled={!canBuyGold}
-            style={styles.button}
+            style={{
+              ...styles.button,
+              backgroundColor: `${
+                !canBuyGold ? "rgba(0, 225, 118, 0.4)" : "rgba(79, 168, 82, 1)"
+              }`,
+            }}
           >
             <Text>
               Купити золото {"\n"} (${GOLD_PRICE})
@@ -158,7 +163,14 @@ export const HomeComponent: FC = (): JSX.Element => {
           <Pressable
             onPress={handleBuyClickerPower}
             disabled={balance <= nextClickerPowerPrice}
-            style={styles.button}
+            style={{
+              ...styles.button,
+              backgroundColor: `${
+                balance <= nextClickerPowerPrice
+                  ? "rgba(0, 225, 118, 0.4)"
+                  : "rgba(79, 168, 82, 1)"
+              }`,
+            }}
           >
             <Text>
               Купити силу +1 {"\n"} (${nextClickerPowerPrice})
@@ -169,7 +181,14 @@ export const HomeComponent: FC = (): JSX.Element => {
           <Pressable
             onPress={handleBuyGeneratorClick}
             disabled={!canBuyGenerator}
-            style={styles.button}
+            style={{
+              ...styles.button,
+              backgroundColor: `${
+                !canBuyGenerator
+                  ? "rgba(0, 225, 118, 0.4)"
+                  : "rgba(79, 168, 82, 1)"
+              }`,
+            }}
           >
             <Text>
               Купити Генератор {"\n"} (${GENERATOR_PRICE})
@@ -178,10 +197,18 @@ export const HomeComponent: FC = (): JSX.Element => {
           <Pressable
             onPress={handleBuyGeneratorControllClick}
             disabled={!canBuyGeneratorControll}
-            style={styles.button}
+            style={{
+              ...styles.button,
+              backgroundColor: `${
+                !canBuyGeneratorControll
+                  ? "rgba(0, 225, 118, 0.4)"
+                  : "rgba(79, 168, 82, 1)"
+              }`,
+            }}
           >
             <Text>
-              Купити Управління генератором {"\n"} (${CONTROLL_GENERATOR_PRICE})
+              Купити Управління генератором {"\n"} ($
+              {CONTROLL_GENERATOR_PRICE})
             </Text>
           </Pressable>
         </View>
@@ -189,7 +216,14 @@ export const HomeComponent: FC = (): JSX.Element => {
           <Pressable
             onPress={handleBuyGeneratorPowerClick}
             disabled={!canBuyGeneratorPower}
-            style={styles.button}
+            style={{
+              ...styles.button,
+              backgroundColor: `${
+                !canBuyGeneratorPower
+                  ? "rgba(0, 225, 118, 0.4)"
+                  : "rgba(79, 168, 82, 1)"
+              }`,
+            }}
           >
             <Text>
               Buy Generator +1 {"\n"} (${NEXT_GENERATOR_POWER_PRICE})

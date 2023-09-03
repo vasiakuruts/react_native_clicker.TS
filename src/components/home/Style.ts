@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StatusBar, StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   App: {
@@ -22,8 +22,9 @@ export const styles = StyleSheet.create({
   score_title: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  titleText: {
     fontSize: 26,
-    fontWeight: 500,
     color: "rgba(0,0,0,0.6)",
   },
 
@@ -36,9 +37,9 @@ export const styles = StyleSheet.create({
   },
   generators_wrapper: {
     flex: 1,
-    width: "84%",
+    alignItems: "center",
+    width: "100%",
     height: "50%",
-    backgroundColor: "yellow",
   },
 
   content_wrapper: {
@@ -61,8 +62,5 @@ export const styles = StyleSheet.create({
     color: "white",
     fontSize: 18,
     margin: 4,
-    disabled: {
-      backgroundColor: "green",
-    },
   },
 });

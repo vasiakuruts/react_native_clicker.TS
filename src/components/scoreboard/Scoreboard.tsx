@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { styles } from "./Style";
-import { IScoreboardProps } from "../../../.expo/types/scoreboard";
+import { IScoreboardProps } from "../../../assets/types/scoreboard";
 
 function pad(num: number, size: number) {
   var s = "000000000" + num;
