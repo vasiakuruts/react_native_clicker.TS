@@ -25,4 +25,8 @@ export const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 2,
   },
+  titleText: {
+    fontSize: 14,
+    fontFamily: "orbitron-regular",
+  },
 });

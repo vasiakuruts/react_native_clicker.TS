@@ -1,35 +1,34 @@
 import React, { useState, useEffect, useCallback, FC } from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Vibration } from "react-native";
 import { styles } from "./Style";
 import Scoreboard from "../scoreboard";
 import Stats from "../stats";
 import Generators from "../generators";
 import Controlls from "../controlls";
 import { IControls } from "../../../assets/types/controlls";
-
-const GENERATOR_PRICE = 2;
-const CONTROLL_GENERATOR_PRICE = 2;
-const GENERATORS_DELAY_MS = 5000;
-const GOLD_PRICE = 10000;
+import { Constants } from "../../constants";
+import ButtonSkills from "../button_skills/ButtonSkills";
 
 export const HomeComponent: FC = (): JSX.Element => {
-  const [balance, setBalance] = useState<number>(50);
+  const [balance, setBalance] = useState<number>(0);
   const [goldBalance, setGoldBalance] = useState<number>(0);
   const [clickerPower, setClickerPower] = useState<number>(1);
   const [generatorsPower, setGeneratorsPower] = useState<number>(1);
   const [generators, setGenerators] = useState<number[]>([]);
   const [controlls, setControlls] = useState<IControls>({});
+  const [isVibration, setIsVibration] = useState<boolean>(false);
 
   const handleClickerClick = useCallback(() => {
     setBalance(balance + clickerPower);
   }, [balance, clickerPower, setBalance]);
 
   const nextClickerPowerPrice = (clickerPower + 1) * 16;
-  const NEXT_GENERATOR_POWER_PRICE = (generatorsPower + 1) * 1;
-  const canBuyGenerator = generators.length < 10 && balance >= GENERATOR_PRICE;
-  const canBuyGold = balance >= GOLD_PRICE;
+  const NEXT_GENERATOR_POWER_PRICE = (generatorsPower + 1) * 10;
+  const canBuyGenerator =
+    generators.length < 10 && balance >= Constants.GENERATOR_PRICE;
+  const canBuyGold = balance >= Constants.GOLD_PRICE;
   const canBuyGeneratorControll =
-    balance >= CONTROLL_GENERATOR_PRICE && !controlls.generator;
+    balance >= Constants.CONTROLL_GENERATOR_PRICE && !controlls.generator;
   const canSumGenerators = generators.some((it) => it > 0);
   const canBuyGeneratorPower =
     balance >= NEXT_GENERATOR_POWER_PRICE && generatorsPower < 11;
@@ -43,7 +42,7 @@ export const HomeComponent: FC = (): JSX.Element => {
 
   const handleBuyGeneratorClick = useCallback(() => {
     if (canBuyGenerator) {
-      setBalance(balance - GENERATOR_PRICE);
+      setBalance(balance - Constants.GENERATOR_PRICE);
       setGenerators([...generators, 1]);
     }
   }, [generators]);
@@ -57,10 +56,14 @@ export const HomeComponent: FC = (): JSX.Element => {
     },
     [generators]
   );
+  const hendleVibrationOn = useCallback(() => {
+    setBalance(balance - Constants.VIBRATION_PRICE);
+    setIsVibration(!isVibration);
+  }, [balance, isVibration]);
 
   const handleBuyGoldClick = useCallback(() => {
     if (canBuyGold) {
-      setBalance(balance - GOLD_PRICE);
+      setBalance(balance - Constants.GOLD_PRICE);
       setGoldBalance(goldBalance + 1);
     }
   }, [balance, goldBalance, canBuyGold]);
@@ -81,7 +84,7 @@ export const HomeComponent: FC = (): JSX.Element => {
 
   const handleBuyGeneratorControllClick = useCallback(() => {
     if (canBuyGeneratorControll) {
-      setBalance(balance - CONTROLL_GENERATOR_PRICE);
+      setBalance(balance - Constants.CONTROLL_GENERATOR_PRICE);
       setControlls({
         ...controlls,
         generator: {},
@@ -112,9 +115,15 @@ export const HomeComponent: FC = (): JSX.Element => {
         });
         setGenerators(nextGenerators);
       }
-    }, GENERATORS_DELAY_MS);
+    }, Constants.GENERATORS_DELAY_MS);
     return () => clearTimeout(timer);
   }, [generators, generatorsPower]);
+
+  useEffect(() => {
+    if (isVibration) {
+      Vibration.vibrate(1);
+    }
+  }, [balance, isVibration]);
 
   return (
     <View style={styles.App}>
@@ -146,89 +155,47 @@ export const HomeComponent: FC = (): JSX.Element => {
       </View>
       <View style={styles.content_wrapper}>
         <View style={styles.content_wrapper_item}>
-          <Pressable
-            onPress={handleBuyGoldClick}
-            disabled={!canBuyGold}
-            style={{
-              ...styles.button,
-              backgroundColor: `${
-                !canBuyGold ? "rgba(0, 225, 118, 0.4)" : "rgba(79, 168, 82, 1)"
-              }`,
-            }}
-          >
-            <Text>
-              Купити золото {"\n"} (${GOLD_PRICE})
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={handleBuyClickerPower}
-            disabled={balance <= nextClickerPowerPrice}
-            style={{
-              ...styles.button,
-              backgroundColor: `${
-                balance <= nextClickerPowerPrice
-                  ? "rgba(0, 225, 118, 0.4)"
-                  : "rgba(79, 168, 82, 1)"
-              }`,
-            }}
-          >
-            <Text>
-              Купити силу +1 {"\n"} (${nextClickerPowerPrice})
-            </Text>
-          </Pressable>
-        </View>
-        <View style={styles.content_wrapper_item}>
-          <Pressable
-            onPress={handleBuyGeneratorClick}
-            disabled={!canBuyGenerator}
-            style={{
-              ...styles.button,
-              backgroundColor: `${
-                !canBuyGenerator
-                  ? "rgba(0, 225, 118, 0.4)"
-                  : "rgba(79, 168, 82, 1)"
-              }`,
-            }}
-          >
-            <Text>
-              Купити Генератор {"\n"} (${GENERATOR_PRICE})
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={handleBuyGeneratorControllClick}
-            disabled={!canBuyGeneratorControll}
-            style={{
-              ...styles.button,
-              backgroundColor: `${
-                !canBuyGeneratorControll
-                  ? "rgba(0, 225, 118, 0.4)"
-                  : "rgba(79, 168, 82, 1)"
-              }`,
-            }}
-          >
-            <Text>
-              Купити Управління генератором {"\n"} ($
-              {CONTROLL_GENERATOR_PRICE})
-            </Text>
-          </Pressable>
-        </View>
-        <View style={styles.content_wrapper_item}>
-          <Pressable
+          <ButtonSkills
             onPress={handleBuyGeneratorPowerClick}
             disabled={!canBuyGeneratorPower}
-            style={{
-              ...styles.button,
-              backgroundColor: `${
-                !canBuyGeneratorPower
-                  ? "rgba(0, 225, 118, 0.4)"
-                  : "rgba(79, 168, 82, 1)"
-              }`,
-            }}
-          >
-            <Text>
-              Buy Generator +1 {"\n"} (${NEXT_GENERATOR_POWER_PRICE})
-            </Text>
-          </Pressable>
+            constants={NEXT_GENERATOR_POWER_PRICE}
+            title={"Buy gen +1 Lvl"}
+          />
+
+          <ButtonSkills
+            onPress={handleBuyClickerPower}
+            disabled={balance <= nextClickerPowerPrice}
+            constants={nextClickerPowerPrice}
+            title={"Buy power +1"}
+          />
+        </View>
+        <View style={styles.content_wrapper_item}>
+          <ButtonSkills
+            onPress={handleBuyGeneratorClick}
+            disabled={!canBuyGenerator}
+            constants={Constants.GENERATOR_PRICE}
+            title={"Buy gen"}
+          />
+          <ButtonSkills
+            onPress={handleBuyGeneratorControllClick}
+            disabled={!canBuyGeneratorControll}
+            constants={Constants.CONTROLL_GENERATOR_PRICE}
+            title={"Quick collection"}
+          />
+        </View>
+        <View style={styles.content_wrapper_item}>
+          <ButtonSkills
+            onPress={handleBuyGoldClick}
+            disabled={!canBuyGold}
+            constants={Constants.GOLD_PRICE}
+            title={"Buy gold"}
+          />
+          <ButtonSkills
+            onPress={hendleVibrationOn}
+            disabled={balance <= Constants.VIBRATION_PRICE}
+            constants={Constants.VIBRATION_PRICE}
+            title={`${isVibration ? "Vibration off" : "Vibration on"}`}
+          />
         </View>
       </View>
     </View>

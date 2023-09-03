@@ -16,12 +16,13 @@ export default function Generators(props: IGeneratorsProps) {
         }}
       >
         <View style={styles.generator_item_level}>
-          <Text>Lvl: {generatorsPower > 10 ? "Max" : generatorsPower}</Text>
+          <Text style={styles.titleText}>
+            Lvl: {generatorsPower > 10 ? "Max" : generatorsPower}
+          </Text>
         </View>
-        <Text>${it}</Text>
+        <Text style={styles.titleText}>${it}</Text>
       </Pressable>
     </View>
   ));
   return <View style={styles.generators}>{renderGenerators}</View>;
 }
-// { backgroundColor: `rgba(0,${it < 256 ? it : 255},0)` }

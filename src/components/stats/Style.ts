@@ -9,4 +9,8 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#00000008",
   },
+  titleText: {
+    fontSize: 15,
+    fontFamily: "orbitron-bold",
+  },
 });

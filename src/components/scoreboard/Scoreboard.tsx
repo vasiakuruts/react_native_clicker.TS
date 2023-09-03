@@ -12,13 +12,13 @@ function pad(num: number, size: number) {
 function renderCells(label: string, score: string[]) {
   const rows = score.map((it, index) => (
     <View key={`scoreChunk${index}`} style={styles.scoreboard_cell}>
-      <Text>{it}</Text>
+      <Text style={styles.titleText}>{it}</Text>
     </View>
   ));
   return (
     <View style={styles.scoreboard_row}>
       <Text style={styles.scoreboard_label}>{label}</Text>
-      <Text>{rows}</Text>
+      <View style={{ flexDirection: "row" }}>{rows}</View>
     </View>
   );
 }
@@ -29,8 +29,8 @@ export default function Scoreboard(props: IScoreboardProps) {
   const balanceCells = pad(balance, 9);
   return (
     <View style={styles.scoreboard}>
-      <Text>{renderCells("G", goldCells)}</Text>
-      <Text>{renderCells("$", balanceCells)}</Text>
+      <View>{renderCells("G", goldCells)}</View>
+      <View>{renderCells("$", balanceCells)}</View>
     </View>
   );
 }

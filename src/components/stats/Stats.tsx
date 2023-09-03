@@ -7,7 +7,7 @@ export default function Stats(props: IStatsProps) {
   const { clickerPower, generatorsCount } = props;
   return (
     <View style={styles.stats}>
-      <Text>
+      <Text style={styles.titleText}>
         Сила клікера: {clickerPower} | Генератори {generatorsCount}/10
       </Text>
     </View>
