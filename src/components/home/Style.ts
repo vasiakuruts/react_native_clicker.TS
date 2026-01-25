@@ -20,6 +20,8 @@ export const styles = StyleSheet.create({
   },
 
   score_title: {
+    display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },

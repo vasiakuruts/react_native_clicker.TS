@@ -10,12 +10,14 @@ export default function Controlls(props: IControllsProps) {
     onControllClick,
     controlls,
     canSumGenerators,
+    titleOne,
+    titleTwo
   } = props;
 
   return (
     <View style={styles.controlls}>
       <Pressable style={styles.controlls_button} onPress={onClickerClick}>
-        <Text style={styles.titleText}>Отримати ${clickerPower}</Text>
+        <Text style={styles.titleText}>{titleOne} ${clickerPower}</Text>
       </Pressable>
       {controlls.generator && (
         <Pressable
@@ -23,7 +25,7 @@ export default function Controlls(props: IControllsProps) {
           disabled={!canSumGenerators}
           onPress={() => onControllClick("generator")}
         >
-          <Text style={styles.titleText}>Швидкий збір</Text>
+          <Text style={styles.titleText}>{titleTwo}</Text>
         </Pressable>
       )}
     </View>
