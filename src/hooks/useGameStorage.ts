@@ -14,6 +14,10 @@ export interface GameState {
   generators: IGeneratorItem[];
   controlls: IControls;
   isVibration: boolean;
+  // Статистика
+  totalClicks: number;
+  totalSpent: number;
+  totalEarned: number;
 }
 
 export const useGameStorage = () => {

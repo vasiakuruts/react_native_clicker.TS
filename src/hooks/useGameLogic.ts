@@ -18,6 +18,11 @@ export const useGameLogic = () => {
   const [controlls, setControlls] = useState<IControls>({});
   const [isVibration, setIsVibration] = useState<boolean>(false);
 
+  // Статистика
+  const [totalClicks, setTotalClicks] = useState<number>(0);
+  const [totalSpent, setTotalSpent] = useState<number>(0);
+  const [totalEarned, setTotalEarned] = useState<number>(0);
+
   // Обчислювані значення
   const nextClickerPowerPrice = (clickerPower + 1) * 16;
   const nextGeneratorPowerPrice = (generatorsPower + 1) * 10;
@@ -34,26 +39,32 @@ export const useGameLogic = () => {
   // Обробники подій
   const handleClickerClick = useCallback(() => {
     setBalance(balance + clickerPower);
-  }, [balance, clickerPower]);
+    setTotalClicks(totalClicks + 1);
+    setTotalEarned(totalEarned + clickerPower);
+  }, [balance, clickerPower, totalClicks, totalEarned]);
 
   const handleBuyClickerPower = useCallback(() => {
     if (balance >= nextClickerPowerPrice) {
       setBalance(balance - nextClickerPowerPrice);
       setClickerPower(clickerPower + 1);
+      setTotalSpent(totalSpent + nextClickerPowerPrice);
     }
-  }, [balance, clickerPower, nextClickerPowerPrice]);
+  }, [balance, clickerPower, nextClickerPowerPrice, totalSpent]);
 
   const handleBuyGeneratorClick = useCallback(() => {
     if (canBuyGenerator) {
       setBalance(balance - nextBuyGeneratorPrice);
       setGenerators([...generators, { price: 0, level: 1 }]);
       setPriceGenerator(priceGenerator + 1);
+      setTotalSpent(totalSpent + nextBuyGeneratorPrice);
     }
-  }, [balance, priceGenerator, generators, canBuyGenerator, nextBuyGeneratorPrice]);
+  }, [balance, priceGenerator, generators, canBuyGenerator, nextBuyGeneratorPrice, totalSpent]);
 
   const handleGeneratorClick = useCallback(
     (generatorIndex: number) => {
-      setBalance(balance + generators[generatorIndex].price);
+      const earned = generators[generatorIndex].price;
+      setBalance(balance + earned);
+      setTotalEarned(totalEarned + earned);
       const nextGenerators = Array.from(generators);
       nextGenerators[generatorIndex].price = 0;
       setGenerators(nextGenerators);
@@ -64,20 +75,22 @@ export const useGameLogic = () => {
         setIsGeneratorsPower(false);
       }
     },
-    [generators, balance, isGeneratorsPower]
+    [generators, balance, isGeneratorsPower, totalEarned]
   );
 
   const handleVibrationToggle = useCallback(() => {
     setBalance(balance - Constants.VIBRATION_PRICE);
     setIsVibration(!isVibration);
-  }, [balance, isVibration]);
+    setTotalSpent(totalSpent + Constants.VIBRATION_PRICE);
+  }, [balance, isVibration, totalSpent]);
 
   const handleBuyGoldClick = useCallback(() => {
     if (canBuyGold) {
       setBalance(balance - Constants.GOLD_PRICE);
       setGoldBalance(goldBalance + 1);
+      setTotalSpent(totalSpent + Constants.GOLD_PRICE);
     }
-  }, [balance, goldBalance, canBuyGold]);
+  }, [balance, goldBalance, canBuyGold, totalSpent]);
 
   const handleControllClick = useCallback(
     (controllId: string) => {
@@ -87,10 +100,11 @@ export const useGameLogic = () => {
           deltaBalance += generators[i].price;
         }
         setBalance(balance + deltaBalance);
+        setTotalEarned(totalEarned + deltaBalance);
         setGenerators(generators.map((it) => ({ ...it, price: 0 })));
       }
     },
-    [balance, generators]
+    [balance, generators, totalEarned]
   );
 
   const handleBuyGeneratorControllClick = useCallback(() => {
@@ -100,16 +114,18 @@ export const useGameLogic = () => {
         ...controlls,
         generator: {},
       });
+      setTotalSpent(totalSpent + Constants.CONTROLL_GENERATOR_PRICE);
     }
-  }, [balance, controlls, canBuyGeneratorControll]);
+  }, [balance, controlls, canBuyGeneratorControll, totalSpent]);
 
   const handleBuyGeneratorPowerClick = useCallback(() => {
     if (canBuyGeneratorPower) {
       setBalance(balance - nextGeneratorPowerPrice);
       setGeneratorsPower(generatorsPower + 1);
       setIsGeneratorsPower(true);
+      setTotalSpent(totalSpent + nextGeneratorPowerPrice);
     }
-  }, [canBuyGeneratorPower, generatorsPower, balance, nextGeneratorPowerPrice]);
+  }, [canBuyGeneratorPower, generatorsPower, balance, nextGeneratorPowerPrice, totalSpent]);
 
   // Методи збереження
   const handleLoadGame = useCallback(async () => {
@@ -123,6 +139,9 @@ export const useGameLogic = () => {
       setGenerators(savedState.generators);
       setControlls(savedState.controlls);
       setIsVibration(savedState.isVibration);
+      setTotalClicks(savedState.totalClicks || 0);
+      setTotalSpent(savedState.totalSpent || 0);
+      setTotalEarned(savedState.totalEarned || 0);
       setIsLoaded(true);
       return true;
     }
@@ -140,6 +159,9 @@ export const useGameLogic = () => {
       generators,
       controlls,
       isVibration,
+      totalClicks,
+      totalSpent,
+      totalEarned,
     };
     return await saveGame(gameState);
   }, [
@@ -151,6 +173,9 @@ export const useGameLogic = () => {
     generators,
     controlls,
     isVibration,
+    totalClicks,
+    totalSpent,
+    totalEarned,
     saveGame,
   ]);
 
@@ -165,6 +190,9 @@ export const useGameLogic = () => {
     setGenerators([]);
     setControlls({});
     setIsVibration(false);
+    setTotalClicks(0);
+    setTotalSpent(0);
+    setTotalEarned(0);
   }, [clearSave]);
 
   // Ефекти
@@ -205,6 +233,9 @@ export const useGameLogic = () => {
     generators,
     controlls,
     isVibration,
+    totalClicks,
+    totalSpent,
+    totalEarned,
     isLoaded,
     handleSaveGame,
   ]);
@@ -219,6 +250,11 @@ export const useGameLogic = () => {
     isVibration,
     isGeneratorsPower,
     isLoaded,
+
+    // Статистика
+    totalClicks,
+    totalSpent,
+    totalEarned,
 
     // Обчислювані значення
     nextClickerPowerPrice,
