@@ -5,13 +5,14 @@ import {
   Platform,
   StatusBar,
   SafeAreaView,
+  Animated,
 } from "react-native";
 import HomeComponent from "./src/components/home/HomeComponent";
 import MainMenu from "./src/components/main-menu/MainMenu";
 import Settings from "./src/components/settings/Settings";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -24,11 +25,22 @@ type Screen = 'menu' | 'game' | 'settings';
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('menu');
   const [shouldLoadGame, setShouldLoadGame] = useState<boolean>(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   const [fontsLoaded, fontError] = useFonts({
     "orbitron-bold": require("./assets/fonts/Orbitron-Bold.ttf"),
     "orbitron-regular": require("./assets/fonts/Orbitron-Regular.ttf"),
   });
+
+  // Fade анімація при зміні екрану
+  useEffect(() => {
+    fadeAnim.setValue(0);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [currentScreen]);
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded || fontError) {
@@ -66,21 +78,23 @@ const App = () => {
     <SafeAreaView style={styles.AndroidSafeArea}>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <ImageBackground source={image} resizeMode="cover" style={styles.image}>
-          {currentScreen === 'menu' ? (
-            <MainMenu
-              onNewGame={handleNewGame}
-              onContinueGame={handleContinueGame}
-              onResetGame={handleResetGame}
-              onSettings={handleOpenSettings}
-            />
-          ) : currentScreen === 'settings' ? (
-            <Settings onBack={handleBackToMenu} />
-          ) : (
-            <HomeComponent
-              shouldLoadGame={shouldLoadGame}
-              onBackToMenu={handleBackToMenu}
-            />
-          )}
+          <Animated.View style={{ flex: 1, width: '100%', opacity: fadeAnim }}>
+            {currentScreen === 'menu' ? (
+              <MainMenu
+                onNewGame={handleNewGame}
+                onContinueGame={handleContinueGame}
+                onResetGame={handleResetGame}
+                onSettings={handleOpenSettings}
+              />
+            ) : currentScreen === 'settings' ? (
+              <Settings onBack={handleBackToMenu} />
+            ) : (
+              <HomeComponent
+                shouldLoadGame={shouldLoadGame}
+                onBackToMenu={handleBackToMenu}
+              />
+            )}
+          </Animated.View>
         </ImageBackground>
       </View>
     </SafeAreaView>
