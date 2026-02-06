@@ -38,94 +38,102 @@ export const useGameLogic = () => {
 
   // Обробники подій
   const handleClickerClick = useCallback(() => {
-    setBalance(balance + clickerPower);
-    setTotalClicks(totalClicks + 1);
-    setTotalEarned(totalEarned + clickerPower);
-  }, [balance, clickerPower, totalClicks, totalEarned]);
+    setBalance(prev => prev + clickerPower);
+    setTotalClicks(prev => prev + 1);
+    setTotalEarned(prev => prev + clickerPower);
+  }, [clickerPower]);
 
   const handleBuyClickerPower = useCallback(() => {
-    if (balance >= nextClickerPowerPrice) {
-      setBalance(balance - nextClickerPowerPrice);
-      setClickerPower(clickerPower + 1);
-      setTotalSpent(totalSpent + nextClickerPowerPrice);
-    }
-  }, [balance, clickerPower, nextClickerPowerPrice, totalSpent]);
+    setBalance(prev => {
+      if (prev >= nextClickerPowerPrice) {
+        setClickerPower(c => c + 1);
+        setTotalSpent(s => s + nextClickerPowerPrice);
+        return prev - nextClickerPowerPrice;
+      }
+      return prev;
+    });
+  }, [nextClickerPowerPrice]);
 
   const handleBuyGeneratorClick = useCallback(() => {
     if (canBuyGenerator) {
-      setBalance(balance - nextBuyGeneratorPrice);
-      setGenerators([...generators, { price: 0, level: 1 }]);
-      setPriceGenerator(priceGenerator + 1);
-      setTotalSpent(totalSpent + nextBuyGeneratorPrice);
+      setBalance(prev => prev - nextBuyGeneratorPrice);
+      setGenerators(prev => [...prev, { price: 0, level: 1 }]);
+      setPriceGenerator(prev => prev + 1);
+      setTotalSpent(prev => prev + nextBuyGeneratorPrice);
     }
-  }, [balance, priceGenerator, generators, canBuyGenerator, nextBuyGeneratorPrice, totalSpent]);
+  }, [canBuyGenerator, nextBuyGeneratorPrice]);
 
   const handleGeneratorClick = useCallback(
     (generatorIndex: number) => {
-      const earned = generators[generatorIndex].price;
-      setBalance(balance + earned);
-      setTotalEarned(totalEarned + earned);
-      const nextGenerators = Array.from(generators);
-      nextGenerators[generatorIndex].price = 0;
-      setGenerators(nextGenerators);
-      if (isGeneratorsPower && nextGenerators[generatorIndex].level < 25) {
-        const nextLvlGenerators = Array.from(generators);
-        nextGenerators[generatorIndex].level += 1;
-        setGenerators(nextLvlGenerators);
-        setIsGeneratorsPower(false);
-      }
+      setGenerators(prevGens => {
+        const earned = prevGens[generatorIndex].price;
+        setBalance(prev => prev + earned);
+        setTotalEarned(prev => prev + earned);
+
+        const nextGenerators = Array.from(prevGens);
+        nextGenerators[generatorIndex].price = 0;
+
+        if (isGeneratorsPower && nextGenerators[generatorIndex].level < 25) {
+          nextGenerators[generatorIndex].level += 1;
+          setIsGeneratorsPower(false);
+        }
+
+        return nextGenerators;
+      });
     },
-    [generators, balance, isGeneratorsPower, totalEarned]
+    [isGeneratorsPower]
   );
 
   const handleVibrationToggle = useCallback(() => {
-    setBalance(balance - Constants.VIBRATION_PRICE);
-    setIsVibration(!isVibration);
-    setTotalSpent(totalSpent + Constants.VIBRATION_PRICE);
-  }, [balance, isVibration, totalSpent]);
+    setBalance(prev => prev - Constants.VIBRATION_PRICE);
+    setIsVibration(prev => !prev);
+    setTotalSpent(prev => prev + Constants.VIBRATION_PRICE);
+  }, []);
 
   const handleBuyGoldClick = useCallback(() => {
     if (canBuyGold) {
-      setBalance(balance - Constants.GOLD_PRICE);
-      setGoldBalance(goldBalance + 1);
-      setTotalSpent(totalSpent + Constants.GOLD_PRICE);
+      setBalance(prev => prev - Constants.GOLD_PRICE);
+      setGoldBalance(prev => prev + 1);
+      setTotalSpent(prev => prev + Constants.GOLD_PRICE);
     }
-  }, [balance, goldBalance, canBuyGold, totalSpent]);
+  }, [canBuyGold]);
 
   const handleControllClick = useCallback(
     (controllId: string) => {
       if (controllId === 'generator') {
-        let deltaBalance = 0;
-        for (let i = 0; i < generators.length; i += 1) {
-          deltaBalance += generators[i].price;
-        }
-        setBalance(balance + deltaBalance);
-        setTotalEarned(totalEarned + deltaBalance);
-        setGenerators(generators.map((it) => ({ ...it, price: 0 })));
+        setGenerators(prevGens => {
+          let deltaBalance = 0;
+          for (let i = 0; i < prevGens.length; i += 1) {
+            deltaBalance += prevGens[i].price;
+          }
+          setBalance(prev => prev + deltaBalance);
+          setTotalEarned(prev => prev + deltaBalance);
+          return prevGens.map((it) => ({ ...it, price: 0 }));
+        });
       }
     },
-    [balance, generators, totalEarned]
+    []
   );
 
   const handleBuyGeneratorControllClick = useCallback(() => {
     if (canBuyGeneratorControll) {
-      setBalance(balance - Constants.CONTROLL_GENERATOR_PRICE);
-      setControlls({
-        ...controlls,
+      setBalance(prev => prev - Constants.CONTROLL_GENERATOR_PRICE);
+      setControlls(prev => ({
+        ...prev,
         generator: {},
-      });
-      setTotalSpent(totalSpent + Constants.CONTROLL_GENERATOR_PRICE);
+      }));
+      setTotalSpent(prev => prev + Constants.CONTROLL_GENERATOR_PRICE);
     }
-  }, [balance, controlls, canBuyGeneratorControll, totalSpent]);
+  }, [canBuyGeneratorControll]);
 
   const handleBuyGeneratorPowerClick = useCallback(() => {
     if (canBuyGeneratorPower) {
-      setBalance(balance - nextGeneratorPowerPrice);
-      setGeneratorsPower(generatorsPower + 1);
+      setBalance(prev => prev - nextGeneratorPowerPrice);
+      setGeneratorsPower(prev => prev + 1);
       setIsGeneratorsPower(true);
-      setTotalSpent(totalSpent + nextGeneratorPowerPrice);
+      setTotalSpent(prev => prev + nextGeneratorPowerPrice);
     }
-  }, [canBuyGeneratorPower, generatorsPower, balance, nextGeneratorPowerPrice, totalSpent]);
+  }, [canBuyGeneratorPower, nextGeneratorPowerPrice]);
 
   // Методи збереження
   const handleLoadGame = useCallback(async () => {
@@ -223,9 +231,10 @@ export const useGameLogic = () => {
     if (isLoaded) {
       const timer = setTimeout(() => {
         handleSaveGame();
-      }, 2); // Автозбереження через 2 секунди після зміни
+      }, 2000); // Автозбереження через 2 секунди після зміни
       return () => clearTimeout(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     balance,
     goldBalance,
@@ -237,7 +246,7 @@ export const useGameLogic = () => {
     totalSpent,
     totalEarned,
     isLoaded,
-    handleSaveGame,
+    // handleSaveGame НЕ включаємо, щоб уникнути циклічних залежностей
   ]);
 
   return {
