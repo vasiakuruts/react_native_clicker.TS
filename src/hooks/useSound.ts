@@ -4,11 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SOUND_SETTINGS_KEY = '@clicker_sound_settings';
 
-// Placeholder для звуків - замініть на реальні файли
+// Звукові файли
 const SOUNDS = {
-  // click: require('../../assets/sounds/click.mp3'),
-  // purchase: require('../../assets/sounds/purchase.mp3'),
-  // background: require('../../assets/sounds/background.mp3'),
+  click: require('../../assets/sounds/click.wav'),
+  purchase: require('../../assets/sounds/purchase.wav'),
+  background: require('../../assets/sounds/background.wav'),
 };
 
 export interface SoundSettings {
@@ -69,9 +69,7 @@ export const useSound = () => {
           shouldDuckAndroid: true,
         });
 
-        // Завантаження звуків (якщо файли існують)
-        // Розкоментуйте, коли додасте реальні файли
-        /*
+        // Завантаження звуків
         const { sound: click } = await Audio.Sound.createAsync(
           SOUNDS.click,
           { volume: settings.soundVolume }
@@ -93,9 +91,8 @@ export const useSound = () => {
         if (settings.musicEnabled) {
           await bg.playAsync();
         }
-        */
       } catch (e) {
-        console.log('Звукові файли не знайдено. Додайте файли в assets/sounds/');
+        console.error('Помилка завантаження звуків:', e);
       }
     };
 
@@ -109,7 +106,7 @@ export const useSound = () => {
       clickSound?.unloadAsync();
       purchaseSound?.unloadAsync();
     };
-  }, [isLoaded]);
+  }, [isLoaded, settings.soundVolume, settings.musicVolume, settings.musicEnabled]);
 
   // Відтворення звуку кліку
   const playClickSound = useCallback(async () => {
