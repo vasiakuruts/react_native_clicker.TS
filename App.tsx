@@ -13,6 +13,7 @@ import Settings from "./src/components/settings/Settings";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useState, useEffect, useRef } from "react";
+import { useSound } from "./src/hooks/useSound";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -26,6 +27,9 @@ const App = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('menu');
   const [shouldLoadGame, setShouldLoadGame] = useState<boolean>(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  // Звуки на рівні всього додатку
+  const soundContext = useSound();
 
   const [fontsLoaded, fontError] = useFonts({
     "orbitron-bold": require("./assets/fonts/Orbitron-Bold.ttf"),
@@ -87,11 +91,16 @@ const App = () => {
                 onSettings={handleOpenSettings}
               />
             ) : currentScreen === 'settings' ? (
-              <Settings onBack={handleBackToMenu} />
+              <Settings
+                onBack={handleBackToMenu}
+                soundContext={soundContext}
+              />
             ) : (
               <HomeComponent
                 shouldLoadGame={shouldLoadGame}
                 onBackToMenu={handleBackToMenu}
+                playClickSound={soundContext.playClickSound}
+                playPurchaseSound={soundContext.playPurchaseSound}
               />
             )}
           </Animated.View>

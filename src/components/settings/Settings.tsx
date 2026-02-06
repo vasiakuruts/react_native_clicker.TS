@@ -3,14 +3,27 @@ import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { styles } from './Style';
 import { useLanguage } from '../../hooks/useLanguage';
-import { useSound, SoundSettings } from '../../hooks/useSound';
 import ButtonLang from '../button_lang';
+
+interface SoundContextType {
+  settings: {
+    soundEnabled: boolean;
+    musicEnabled: boolean;
+    soundVolume: number;
+    musicVolume: number;
+  };
+  toggleSound: (enabled: boolean) => void;
+  toggleMusic: (enabled: boolean) => void;
+  setSoundVolume: (volume: number) => void;
+  setMusicVolume: (volume: number) => void;
+}
 
 interface SettingsProps {
   onBack: () => void;
+  soundContext: SoundContextType;
 }
 
-export const Settings: FC<SettingsProps> = ({ onBack }) => {
+export const Settings: FC<SettingsProps> = ({ onBack, soundContext }) => {
   const { lang, changeLang, getText } = useLanguage();
   const {
     settings,
@@ -18,7 +31,7 @@ export const Settings: FC<SettingsProps> = ({ onBack }) => {
     toggleMusic,
     setSoundVolume,
     setMusicVolume,
-  } = useSound();
+  } = soundContext;
 
   return (
     <View style={styles.container}>

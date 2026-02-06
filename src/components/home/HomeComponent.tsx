@@ -8,21 +8,23 @@ import Header from "../header";
 import ShopPanel from "../shop-panel";
 import { useGameLogic } from "../../hooks/useGameLogic";
 import { useLanguage } from "../../hooks/useLanguage";
-import { useSound } from "../../hooks/useSound";
 import { Constants } from "../../constants";
 
 interface HomeComponentProps {
   shouldLoadGame: boolean;
   onBackToMenu: () => void;
+  playClickSound: () => void;
+  playPurchaseSound: () => void;
 }
 
 export const HomeComponent: FC<HomeComponentProps> = ({
   shouldLoadGame,
   onBackToMenu,
+  playClickSound,
+  playPurchaseSound,
 }): JSX.Element => {
   const { lang, changeLang, getText } = useLanguage();
   const gameLogic = useGameLogic();
-  const { playClickSound, playPurchaseSound } = useSound();
 
   useEffect(() => {
     if (shouldLoadGame) {
@@ -37,39 +39,29 @@ export const HomeComponent: FC<HomeComponentProps> = ({
   }, [playClickSound, gameLogic.handleClickerClick]);
 
   const handleBuyGeneratorPower = useCallback(() => {
-    if (gameLogic.canBuyGeneratorPower && !gameLogic.isGeneratorsPower) {
-      playPurchaseSound();
-    }
+    playPurchaseSound();
     gameLogic.handleBuyGeneratorPowerClick();
-  }, [playPurchaseSound, gameLogic]);
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorPowerClick]);
 
   const handleBuyClickerPower = useCallback(() => {
-    if (gameLogic.balance > gameLogic.nextClickerPowerPrice) {
-      playPurchaseSound();
-    }
+    playPurchaseSound();
     gameLogic.handleBuyClickerPower();
-  }, [playPurchaseSound, gameLogic]);
+  }, [playPurchaseSound, gameLogic.handleBuyClickerPower]);
 
   const handleBuyGenerator = useCallback(() => {
-    if (gameLogic.canBuyGenerator) {
-      playPurchaseSound();
-    }
+    playPurchaseSound();
     gameLogic.handleBuyGeneratorClick();
-  }, [playPurchaseSound, gameLogic]);
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorClick]);
 
   const handleBuyGeneratorControll = useCallback(() => {
-    if (gameLogic.canBuyGeneratorControll) {
-      playPurchaseSound();
-    }
+    playPurchaseSound();
     gameLogic.handleBuyGeneratorControllClick();
-  }, [playPurchaseSound, gameLogic]);
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorControllClick]);
 
   const handleBuyGold = useCallback(() => {
-    if (gameLogic.canBuyGold) {
-      playPurchaseSound();
-    }
+    playPurchaseSound();
     gameLogic.handleBuyGoldClick();
-  }, [playPurchaseSound, gameLogic]);
+  }, [playPurchaseSound, gameLogic.handleBuyGoldClick]);
 
   return (
     <View style={styles.App}>
