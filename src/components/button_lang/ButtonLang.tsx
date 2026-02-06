@@ -9,7 +9,7 @@ const FLAG_IMAGES: Record<number, ImageSourcePropType> = {
   2: require("../../../assets/flags/germany.png"),
 };
 export default function ButtonLang(props: IButtonLangProps) {
-  const { onPress, constants, title } = props;
+  const { onPress, constants } = props;
   const flagSource = useMemo(() => {
     return FLAG_IMAGES[constants] || FLAG_IMAGES[0]; // Повертаємо укр. прапор за замовчуванням
   }, [constants]);
@@ -24,7 +24,6 @@ export default function ButtonLang(props: IButtonLangProps) {
       ]}
     >
      
-      <Text style={styles.titleText}>{title}</Text>
       <Image
         style={styles.tinyLogo}
         source={flagSource} // Використовуємо вже підготовлений require
