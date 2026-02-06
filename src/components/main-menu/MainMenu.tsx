@@ -70,15 +70,16 @@ export const MainMenu: FC<MainMenuProps> = ({
       </View>
 
       <Text style={styles.title}>{getText('menuTitle')}</Text>
-
-      <TouchableOpacity
+      {!hasSave ? 
+        <TouchableOpacity
         style={styles.menuButton}
         onPress={onNewGame}
         activeOpacity={0.8}
       >
         <Text style={styles.menuButtonText}>{getText('newGame')}</Text>
       </TouchableOpacity>
-
+      
+:
       <TouchableOpacity
         style={[
           styles.menuButton,
@@ -89,7 +90,28 @@ export const MainMenu: FC<MainMenuProps> = ({
         disabled={!hasSave}
       >
         <Text style={styles.menuButtonText}>{getText('continueGame')}</Text>
+      </TouchableOpacity>}
+      {hasSave ? 
+        <TouchableOpacity
+        style={styles.menuButton}
+        onPress={onNewGame}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.menuButtonText}>{getText('newGame')}</Text>
       </TouchableOpacity>
+      
+:
+      <TouchableOpacity
+        style={[
+          styles.menuButton,
+          !hasSave && styles.menuButtonDisabled,
+        ]}
+        onPress={hasSave ? onContinueGame : undefined}
+        activeOpacity={hasSave ? 0.8 : 1}
+        disabled={!hasSave}
+      >
+        <Text style={styles.menuButtonText}>{getText('continueGame')}</Text>
+      </TouchableOpacity>}
 
       <TouchableOpacity
         style={[styles.menuButton, styles.menuButtonSettings]}

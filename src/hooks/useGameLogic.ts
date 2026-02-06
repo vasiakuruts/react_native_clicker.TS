@@ -223,7 +223,7 @@ export const useGameLogic = () => {
     if (isLoaded) {
       const timer = setTimeout(() => {
         handleSaveGame();
-      }, 2000); // Автозбереження через 2 секунди після зміни
+      }, 2); // Автозбереження через 2 секунди після зміни
       return () => clearTimeout(timer);
     }
   }, [
