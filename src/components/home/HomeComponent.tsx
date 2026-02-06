@@ -1,4 +1,4 @@
-import React, { FC, JSX, useEffect } from "react";
+import React, { FC, JSX, useEffect, useCallback } from "react";
 import { View } from "react-native";
 import { styles } from "./Style";
 import Stats from "../stats";
@@ -8,6 +8,7 @@ import Header from "../header";
 import ShopPanel from "../shop-panel";
 import { useGameLogic } from "../../hooks/useGameLogic";
 import { useLanguage } from "../../hooks/useLanguage";
+import { useSound } from "../../hooks/useSound";
 import { Constants } from "../../constants";
 
 interface HomeComponentProps {
@@ -21,12 +22,54 @@ export const HomeComponent: FC<HomeComponentProps> = ({
 }): JSX.Element => {
   const { lang, changeLang, getText } = useLanguage();
   const gameLogic = useGameLogic();
+  const { playClickSound, playPurchaseSound } = useSound();
 
   useEffect(() => {
     if (shouldLoadGame) {
       gameLogic.handleLoadGame();
     }
   }, [shouldLoadGame]);
+
+  // Обгортки для обробників подій з звуками
+  const handleClickerClick = useCallback(() => {
+    playClickSound();
+    gameLogic.handleClickerClick();
+  }, [playClickSound, gameLogic.handleClickerClick]);
+
+  const handleBuyGeneratorPower = useCallback(() => {
+    if (gameLogic.canBuyGeneratorPower && !gameLogic.isGeneratorsPower) {
+      playPurchaseSound();
+    }
+    gameLogic.handleBuyGeneratorPowerClick();
+  }, [playPurchaseSound, gameLogic]);
+
+  const handleBuyClickerPower = useCallback(() => {
+    if (gameLogic.balance > gameLogic.nextClickerPowerPrice) {
+      playPurchaseSound();
+    }
+    gameLogic.handleBuyClickerPower();
+  }, [playPurchaseSound, gameLogic]);
+
+  const handleBuyGenerator = useCallback(() => {
+    if (gameLogic.canBuyGenerator) {
+      playPurchaseSound();
+    }
+    gameLogic.handleBuyGeneratorClick();
+  }, [playPurchaseSound, gameLogic]);
+
+  const handleBuyGeneratorControll = useCallback(() => {
+    if (gameLogic.canBuyGeneratorControll) {
+      playPurchaseSound();
+    }
+    gameLogic.handleBuyGeneratorControllClick();
+  }, [playPurchaseSound, gameLogic]);
+
+  const handleBuyGold = useCallback(() => {
+    if (gameLogic.canBuyGold) {
+      playPurchaseSound();
+    }
+    gameLogic.handleBuyGoldClick();
+  }, [playPurchaseSound, gameLogic]);
 
   return (
     <View style={styles.App}>
@@ -51,7 +94,7 @@ export const HomeComponent: FC<HomeComponentProps> = ({
         <Controlls
           controlls={gameLogic.controlls}
           clickerPower={gameLogic.clickerPower}
-          onClickerClick={gameLogic.handleClickerClick}
+          onClickerClick={handleClickerClick}
           onControllClick={gameLogic.handleControllClick}
           canSumGenerators={gameLogic.canSumGenerators}
           titleOne={getText('controls', 0)}
@@ -66,11 +109,11 @@ export const HomeComponent: FC<HomeComponentProps> = ({
       </View>
 
       <ShopPanel
-        onBuyGeneratorPower={gameLogic.handleBuyGeneratorPowerClick}
-        onBuyClickerPower={gameLogic.handleBuyClickerPower}
-        onBuyGenerator={gameLogic.handleBuyGeneratorClick}
-        onBuyGeneratorControll={gameLogic.handleBuyGeneratorControllClick}
-        onBuyGold={gameLogic.handleBuyGoldClick}
+        onBuyGeneratorPower={handleBuyGeneratorPower}
+        onBuyClickerPower={handleBuyClickerPower}
+        onBuyGenerator={handleBuyGenerator}
+        onBuyGeneratorControll={handleBuyGeneratorControll}
+        onBuyGold={handleBuyGold}
         onVibrationToggle={gameLogic.handleVibrationToggle}
         canBuyGeneratorPower={gameLogic.canBuyGeneratorPower}
         canBuyClickerPower={gameLogic.balance > gameLogic.nextClickerPowerPrice}

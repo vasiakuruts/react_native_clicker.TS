@@ -9,12 +9,14 @@ interface MainMenuProps {
   onNewGame: () => void;
   onContinueGame: () => void;
   onResetGame: () => void;
+  onSettings: () => void;
 }
 
 export const MainMenu: FC<MainMenuProps> = ({
   onNewGame,
   onContinueGame,
   onResetGame,
+  onSettings,
 }) => {
   const { lang, changeLang, getText } = useLanguage();
   const { checkSaveExists } = useGameStorage();
@@ -69,6 +71,14 @@ export const MainMenu: FC<MainMenuProps> = ({
         disabled={!hasSave}
       >
         <Text style={styles.menuButtonText}>{getText('continueGame')}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.menuButton, styles.menuButtonSettings]}
+        onPress={onSettings}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.menuButtonText}>{getText('settings')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity

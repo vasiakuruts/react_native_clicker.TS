@@ -38,6 +38,9 @@ export const styles = StyleSheet.create({
   menuButtonDanger: {
     backgroundColor: '#f44336',
   },
+  menuButtonSettings: {
+    backgroundColor: '#2196F3',
+  },
   menuButtonText: {
     color: 'white',
     fontSize: 20,

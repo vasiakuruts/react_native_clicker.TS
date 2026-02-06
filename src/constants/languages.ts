@@ -25,10 +25,17 @@ export const Languages = {
   continueGame: ["Продовжити", "Continue", "Fortsetzen"],
   resetGame: ["Скинути Гру", "Reset Game", "Spiel zurücksetzen"],
   exitGame: ["Вийти з Гри", "Exit Game", "Spiel verlassen"],
+  settings: ["Налаштування", "Settings", "Einstellungen"],
   backToMenu: ["◀ Меню", "◀ Menu", "◀ Menü"],
   confirmReset: ["Ви впевнені?", "Are you sure?", "Sind Sie sicher?"],
   yes: ["Так", "Yes", "Ja"],
-  no: ["Ні", "No", "Nein"]
+  no: ["Ні", "No", "Nein"],
+  // Налаштування
+  settingsTitle: ["Налаштування Звуку", "Sound Settings", "Toneinstellungen"],
+  soundEffects: ["Звукові Ефекти", "Sound Effects", "Soundeffekte"],
+  backgroundMusic: ["Фонова Музика", "Background Music", "Hintergrundmusik"],
+  soundVolume: ["Гучність Звуків", "Sound Volume", "Lautstärke"],
+  musicVolume: ["Гучність Музики", "Music Volume", "Musiklautstärke"]
 };
 
 export type LanguageKey = keyof typeof Languages;

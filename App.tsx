@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import HomeComponent from "./src/components/home/HomeComponent";
 import MainMenu from "./src/components/main-menu/MainMenu";
+import Settings from "./src/components/settings/Settings";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useState } from "react";
@@ -18,7 +19,7 @@ const image = {
   uri: "https://abrakadabra.fun/uploads/posts/2022-01/1642919410_4-abrakadabra-fun-p-odnotonnie-oboi-dlya-telefona-android-7.jpg",
 };
 
-type Screen = 'menu' | 'game';
+type Screen = 'menu' | 'game' | 'settings';
 
 const App = () => {
   const [currentScreen, setCurrentScreen] = useState<Screen>('menu');
@@ -53,6 +54,10 @@ const App = () => {
     setCurrentScreen('menu');
   };
 
+  const handleOpenSettings = () => {
+    setCurrentScreen('settings');
+  };
+
   if (!fontsLoaded && !fontError) {
     return null;
   }
@@ -66,7 +71,10 @@ const App = () => {
               onNewGame={handleNewGame}
               onContinueGame={handleContinueGame}
               onResetGame={handleResetGame}
+              onSettings={handleOpenSettings}
             />
+          ) : currentScreen === 'settings' ? (
+            <Settings onBack={handleBackToMenu} />
           ) : (
             <HomeComponent
               shouldLoadGame={shouldLoadGame}
