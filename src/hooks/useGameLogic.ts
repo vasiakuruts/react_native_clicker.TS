@@ -3,8 +3,11 @@ import { Vibration } from 'react-native';
 import { IGeneratorItem } from '../../assets/types/generators';
 import { IControls } from '../../assets/types/controlls';
 import { Constants } from '../constants';
+import { useGameStorage, GameState } from './useGameStorage';
 
 export const useGameLogic = () => {
+  const { saveGame, loadGame, clearSave } = useGameStorage();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [balance, setBalance] = useState<number>(0);
   const [goldBalance, setGoldBalance] = useState<number>(0);
   const [clickerPower, setClickerPower] = useState<number>(1);
@@ -108,6 +111,62 @@ export const useGameLogic = () => {
     }
   }, [canBuyGeneratorPower, generatorsPower, balance, nextGeneratorPowerPrice]);
 
+  // Методи збереження
+  const handleLoadGame = useCallback(async () => {
+    const savedState = await loadGame();
+    if (savedState) {
+      setBalance(savedState.balance);
+      setGoldBalance(savedState.goldBalance);
+      setClickerPower(savedState.clickerPower);
+      setPriceGenerator(savedState.priceGenerator);
+      setGeneratorsPower(savedState.generatorsPower);
+      setGenerators(savedState.generators);
+      setControlls(savedState.controlls);
+      setIsVibration(savedState.isVibration);
+      setIsLoaded(true);
+      return true;
+    }
+    setIsLoaded(true);
+    return false;
+  }, [loadGame]);
+
+  const handleSaveGame = useCallback(async () => {
+    const gameState: GameState = {
+      balance,
+      goldBalance,
+      clickerPower,
+      priceGenerator,
+      generatorsPower,
+      generators,
+      controlls,
+      isVibration,
+    };
+    return await saveGame(gameState);
+  }, [
+    balance,
+    goldBalance,
+    clickerPower,
+    priceGenerator,
+    generatorsPower,
+    generators,
+    controlls,
+    isVibration,
+    saveGame,
+  ]);
+
+  const handleResetGame = useCallback(async () => {
+    await clearSave();
+    setBalance(0);
+    setGoldBalance(0);
+    setClickerPower(1);
+    setPriceGenerator(1);
+    setGeneratorsPower(1);
+    setIsGeneratorsPower(false);
+    setGenerators([]);
+    setControlls({});
+    setIsVibration(false);
+  }, [clearSave]);
+
   // Ефекти
   useEffect(() => {
     const timer = setInterval(() => {
@@ -131,6 +190,25 @@ export const useGameLogic = () => {
     }
   }, [balance, isVibration]);
 
+  // Автозбереження при зміні стану гри
+  useEffect(() => {
+    if (isLoaded) {
+      const timer = setTimeout(() => {
+        handleSaveGame();
+      }, 2000); // Автозбереження через 2 секунди після зміни
+      return () => clearTimeout(timer);
+    }
+  }, [
+    balance,
+    goldBalance,
+    clickerPower,
+    generators,
+    controlls,
+    isVibration,
+    isLoaded,
+    handleSaveGame,
+  ]);
+
   return {
     // Стейти
     balance,
@@ -140,6 +218,7 @@ export const useGameLogic = () => {
     controlls,
     isVibration,
     isGeneratorsPower,
+    isLoaded,
 
     // Обчислювані значення
     nextClickerPowerPrice,
@@ -161,5 +240,10 @@ export const useGameLogic = () => {
     handleControllClick,
     handleBuyGeneratorControllClick,
     handleBuyGeneratorPowerClick,
+
+    // Методи збереження
+    handleLoadGame,
+    handleSaveGame,
+    handleResetGame,
   };
 };

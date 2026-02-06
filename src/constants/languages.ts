@@ -18,7 +18,17 @@ export const Languages = {
     ["Вібрація Викл", "Вібрація Вкл"],
     ["Vibration off", "Vibration on"],
     ["Vibration aus", "Vibration auf"]
-  ]
+  ],
+  // Меню
+  menuTitle: ["Кліка Гра", "Clicker Game", "Clicker Spiel"],
+  newGame: ["Нова Гра", "New Game", "Neues Spiel"],
+  continueGame: ["Продовжити", "Continue", "Fortsetzen"],
+  resetGame: ["Скинути Гру", "Reset Game", "Spiel zurücksetzen"],
+  exitGame: ["Вийти з Гри", "Exit Game", "Spiel verlassen"],
+  backToMenu: ["◀ Меню", "◀ Menu", "◀ Menü"],
+  confirmReset: ["Ви впевнені?", "Are you sure?", "Sind Sie sicher?"],
+  yes: ["Так", "Yes", "Ja"],
+  no: ["Ні", "No", "Nein"]
 };
 
 export type LanguageKey = keyof typeof Languages;

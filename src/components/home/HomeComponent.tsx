@@ -1,4 +1,4 @@
-import React, { FC, JSX } from "react";
+import React, { FC, JSX, useEffect } from "react";
 import { View } from "react-native";
 import { styles } from "./Style";
 import Stats from "../stats";
@@ -10,9 +10,23 @@ import { useGameLogic } from "../../hooks/useGameLogic";
 import { useLanguage } from "../../hooks/useLanguage";
 import { Constants } from "../../constants";
 
-export const HomeComponent: FC = (): JSX.Element => {
+interface HomeComponentProps {
+  shouldLoadGame: boolean;
+  onBackToMenu: () => void;
+}
+
+export const HomeComponent: FC<HomeComponentProps> = ({
+  shouldLoadGame,
+  onBackToMenu,
+}): JSX.Element => {
   const { lang, changeLang, getText } = useLanguage();
   const gameLogic = useGameLogic();
+
+  useEffect(() => {
+    if (shouldLoadGame) {
+      gameLogic.handleLoadGame();
+    }
+  }, [shouldLoadGame]);
 
   return (
     <View style={styles.App}>
@@ -23,6 +37,8 @@ export const HomeComponent: FC = (): JSX.Element => {
         goldBalance={gameLogic.goldBalance}
         balance={gameLogic.balance}
         styles={styles}
+        backToMenuText={getText('backToMenu')}
+        onBackToMenu={onBackToMenu}
       />
 
       <View style={styles.score_components}>
