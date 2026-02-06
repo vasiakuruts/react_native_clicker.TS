@@ -35,7 +35,12 @@ export const Languages = {
   soundEffects: ["Звукові Ефекти", "Sound Effects", "Soundeffekte"],
   backgroundMusic: ["Фонова Музика", "Background Music", "Hintergrundmusik"],
   soundVolume: ["Гучність Звуків", "Sound Volume", "Lautstärke"],
-  musicVolume: ["Гучність Музики", "Music Volume", "Musiklautstärke"]
+  musicVolume: ["Гучність Музики", "Music Volume", "Musiklautstärke"],
+  // Статистика
+  statsTitle: ["Статистика Гри", "Game Statistics", "Spielstatistiken"],
+  totalClicks: ["Всього Кліків:", "Total Clicks:", "Gesamt Klicks:"],
+  totalSpent: ["Витрачено:", "Total Spent:", "Ausgegeben:"],
+  totalEarned: ["Зароблено:", "Total Earned:", "Verdient:"]
 };
 
 export type LanguageKey = keyof typeof Languages;

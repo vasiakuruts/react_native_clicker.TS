@@ -91,27 +91,7 @@ export const MainMenu: FC<MainMenuProps> = ({
       >
         <Text style={styles.menuButtonText}>{getText('continueGame')}</Text>
       </TouchableOpacity>}
-      {hasSave ? 
-        <TouchableOpacity
-        style={styles.menuButton}
-        onPress={onNewGame}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.menuButtonText}>{getText('newGame')}</Text>
-      </TouchableOpacity>
       
-:
-      <TouchableOpacity
-        style={[
-          styles.menuButton,
-          !hasSave && styles.menuButtonDisabled,
-        ]}
-        onPress={hasSave ? onContinueGame : undefined}
-        activeOpacity={hasSave ? 0.8 : 1}
-        disabled={!hasSave}
-      >
-        <Text style={styles.menuButtonText}>{getText('continueGame')}</Text>
-      </TouchableOpacity>}
 
       <TouchableOpacity
         style={[styles.menuButton, styles.menuButtonSettings]}
@@ -137,20 +117,20 @@ export const MainMenu: FC<MainMenuProps> = ({
       {/* Статистика */}
       {hasSave && (
         <View style={styles.statsSection}>
-          <Text style={styles.statsTitle}>Статистика гри</Text>
+          <Text style={styles.statsTitle}>{getText('statsTitle')}</Text>
 
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Всього кліків:</Text>
+            <Text style={styles.statLabel}>{getText('totalClicks')}</Text>
             <Text style={styles.statValue}>{totalClicks.toLocaleString()}</Text>
           </View>
 
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Витрачено:</Text>
+            <Text style={styles.statLabel}>{getText('totalSpent')}</Text>
             <Text style={styles.statValue}>${totalSpent.toLocaleString()}</Text>
           </View>
 
           <View style={styles.statItem}>
-            <Text style={styles.statLabel}>Зароблено:</Text>
+            <Text style={styles.statLabel}>{getText('totalEarned')}</Text>
             <Text style={styles.statValue}>${totalEarned.toLocaleString()}</Text>
           </View>
         </View>
