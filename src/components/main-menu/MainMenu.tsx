@@ -19,9 +19,14 @@ export const MainMenu: FC<MainMenuProps> = ({
   onSettings,
 }) => {
   const { lang, changeLang, getText } = useLanguage();
-  const { checkSaveExists } = useGameStorage();
+  const { checkSaveExists, loadGame } = useGameStorage();
   const [hasSave, setHasSave] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
+
+  // Статистика
+  const [totalClicks, setTotalClicks] = useState<number>(0);
+  const [totalSpent, setTotalSpent] = useState<number>(0);
+  const [totalEarned, setTotalEarned] = useState<number>(0);
 
   useEffect(() => {
     const checkSave = async () => {
@@ -30,6 +35,19 @@ export const MainMenu: FC<MainMenuProps> = ({
     };
     checkSave();
   }, [checkSaveExists]);
+
+  // Завантаження статистики
+  useEffect(() => {
+    const loadStats = async () => {
+      const savedState = await loadGame();
+      if (savedState) {
+        setTotalClicks(savedState.totalClicks || 0);
+        setTotalSpent(savedState.totalSpent || 0);
+        setTotalEarned(savedState.totalEarned || 0);
+      }
+    };
+    loadStats();
+  }, [loadGame, hasSave]);
 
   const handleResetClick = () => {
     setShowConfirm(true);
@@ -93,6 +111,28 @@ export const MainMenu: FC<MainMenuProps> = ({
       >
         <Text style={styles.menuButtonText}>{getText('resetGame')}</Text>
       </TouchableOpacity>
+
+      {/* Статистика */}
+      {hasSave && (
+        <View style={styles.statsSection}>
+          <Text style={styles.statsTitle}>Статистика гри</Text>
+
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Всього кліків:</Text>
+            <Text style={styles.statValue}>{totalClicks.toLocaleString()}</Text>
+          </View>
+
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Витрачено:</Text>
+            <Text style={styles.statValue}>${totalSpent.toLocaleString()}</Text>
+          </View>
+
+          <View style={styles.statItem}>
+            <Text style={styles.statLabel}>Зароблено:</Text>
+            <Text style={styles.statValue}>${totalEarned.toLocaleString()}</Text>
+          </View>
+        </View>
+      )}
 
       <Modal
         visible={showConfirm}

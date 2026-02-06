@@ -63,43 +63,4 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: 40,
   },
-  statsSection: {
-    marginTop: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: 20,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
-  },
-  statsTitle: {
-    fontSize: 24,
-    fontFamily: 'orbitron-bold',
-    color: '#333',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  statItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
-  },
-  statLabel: {
-    fontSize: 16,
-    fontFamily: 'orbitron-regular',
-    color: '#666',
-  },
-  statValue: {
-    fontSize: 18,
-    fontFamily: 'orbitron-bold',
-    color: '#4CAF50',
-  },
 });
