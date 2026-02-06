@@ -7,7 +7,7 @@ import { useGameStorage, GameState } from './useGameStorage';
 
 export const useGameLogic = () => {
   const { saveGame, loadGame, clearSave } = useGameStorage();
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
   const [balance, setBalance] = useState<number>(0);
   const [goldBalance, setGoldBalance] = useState<number>(0);
   const [clickerPower, setClickerPower] = useState<number>(1);
@@ -225,13 +225,12 @@ export const useGameLogic = () => {
       Vibration.vibrate(1);
     }
   }, [balance, isVibration]);
-
   // Автозбереження при зміні стану гри
   useEffect(() => {
     if (isLoaded) {
       const timer = setTimeout(() => {
         handleSaveGame();
-      }, 2000); // Автозбереження через 2 секунди після зміни
+      }, 200); // Автозбереження через 2 секунди після зміни
       return () => clearTimeout(timer);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
