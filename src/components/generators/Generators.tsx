@@ -72,7 +72,7 @@ const GeneratorItem = ({ generator, index, handleClick }: any) => {
         >
           <View style={styles.generator_item_level}>
             <Text style={styles.titleText}>
-              Lvl: {generator.level > 24 ? "Max" : generator.level}
+              Lvl: {generator.level}
             </Text>
           </View>
           <Text style={styles.titleText}>${generator.price}</Text>

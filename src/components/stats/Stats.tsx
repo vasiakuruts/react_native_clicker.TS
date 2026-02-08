@@ -8,7 +8,7 @@ export default function Stats(props: IStatsProps) {
   return (
     <View style={styles.stats}>
       <Text style={styles.titleText}>
-        {titleOne}: {clickerPower} | {titleTwo} {generatorsCount}/10
+        {titleOne}: {clickerPower} | {titleTwo} {generatorsCount}/18
       </Text>
     </View>
   );

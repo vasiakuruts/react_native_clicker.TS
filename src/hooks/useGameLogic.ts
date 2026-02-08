@@ -27,9 +27,9 @@ export const useGameLogic = () => {
   // Обчислювані значення
   const nextClickerPowerPrice = (clickerPower + 1) * 16;
   const nextGeneratorPowerPrice = (generatorsPower + 1) * 10;
-  const nextBuyGeneratorPrice = (priceGenerator + 1) * 5000;
+  const nextBuyGeneratorPrice = (priceGenerator + 1) * Constants.GENERATOR_PRICE;
 
-  const canBuyGenerator = generators.length < 10 && balance >= nextBuyGeneratorPrice;
+  const canBuyGenerator = generators.length < 18 && balance >= nextBuyGeneratorPrice;
   const canBuyGold = balance >= Constants.GOLD_PRICE;
   const canBuyGeneratorControll =
     balance >= Constants.CONTROLL_GENERATOR_PRICE && !controlls.generator;
@@ -74,7 +74,7 @@ export const useGameLogic = () => {
         const nextGenerators = Array.from(prevGens);
         nextGenerators[generatorIndex].price = 0;
 
-        if (isGeneratorsPower && nextGenerators[generatorIndex].level < 25) {
+        if (isGeneratorsPower) {
           nextGenerators[generatorIndex].level += 1;
           setIsGeneratorsPower(false);
         }
