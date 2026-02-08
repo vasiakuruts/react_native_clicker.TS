@@ -1,203 +1,132 @@
-import React, { useState, useEffect, useCallback, FC } from "react";
-import { View, Text, Vibration } from "react-native";
+import React, { FC, JSX, useEffect, useCallback } from "react";
+import { View } from "react-native";
 import { styles } from "./Style";
-import Scoreboard from "../scoreboard";
 import Stats from "../stats";
 import Generators from "../generators";
 import Controlls from "../controlls";
-import { IControls } from "../../../assets/types/controlls";
+import Header from "../header";
+import ShopPanel from "../shop-panel";
+import { useGameLogic } from "../../hooks/useGameLogic";
+import { useLanguage } from "../../hooks/useLanguage";
 import { Constants } from "../../constants";
-import ButtonSkills from "../button_skills/ButtonSkills";
 
-export const HomeComponent: FC = (): JSX.Element => {
-  const [balance, setBalance] = useState<number>(0);
-  const [goldBalance, setGoldBalance] = useState<number>(0);
-  const [clickerPower, setClickerPower] = useState<number>(1);
-  const [generatorsPower, setGeneratorsPower] = useState<number>(1);
-  const [generators, setGenerators] = useState<number[]>([]);
-  const [controlls, setControlls] = useState<IControls>({});
-  const [isVibration, setIsVibration] = useState<boolean>(false);
+interface HomeComponentProps {
+  shouldLoadGame: boolean;
+  onBackToMenu: () => void;
+  playClickSound: () => void;
+  playPurchaseSound: () => void;
+}
 
+export const HomeComponent: FC<HomeComponentProps> = ({
+  shouldLoadGame,
+  onBackToMenu,
+  playClickSound,
+  playPurchaseSound,
+}): JSX.Element => {
+  const gameLogic = useGameLogic();
+  const { getText } = useLanguage({
+    initialLang: gameLogic.lang as 0 | 1 | 2,
+    onLangChange: gameLogic.handleLangChange,
+  });
+
+  useEffect(() => {
+    if (shouldLoadGame) {
+      gameLogic.handleLoadGame();
+    }
+  }, [shouldLoadGame]);
+
+  // Обгортки для обробників подій з звуками
   const handleClickerClick = useCallback(() => {
-    setBalance(balance + clickerPower);
-  }, [balance, clickerPower, setBalance]);
+    playClickSound();
+    gameLogic.handleClickerClick();
+  }, [playClickSound, gameLogic.handleClickerClick]);
 
-  const nextClickerPowerPrice = (clickerPower + 1) * 16;
-  const NEXT_GENERATOR_POWER_PRICE = (generatorsPower + 1) * 10;
-  const canBuyGenerator =
-    generators.length < 10 && balance >= Constants.GENERATOR_PRICE;
-  const canBuyGold = balance >= Constants.GOLD_PRICE;
-  const canBuyGeneratorControll =
-    balance >= Constants.CONTROLL_GENERATOR_PRICE && !controlls.generator;
-  const canSumGenerators = generators.some((it) => it > 0);
-  const canBuyGeneratorPower =
-    balance >= NEXT_GENERATOR_POWER_PRICE && generatorsPower < 11;
+  const handleBuyGeneratorPower = useCallback(() => {
+    playPurchaseSound();
+    gameLogic.handleBuyGeneratorPowerClick();
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorPowerClick]);
 
   const handleBuyClickerPower = useCallback(() => {
-    if (balance >= nextClickerPowerPrice) {
-      setBalance(balance - nextClickerPowerPrice);
-      setClickerPower(clickerPower + 1);
-    }
-  }, [balance]);
+    playPurchaseSound();
+    gameLogic.handleBuyClickerPower();
+  }, [playPurchaseSound, gameLogic.handleBuyClickerPower]);
 
-  const handleBuyGeneratorClick = useCallback(() => {
-    if (canBuyGenerator) {
-      setBalance(balance - Constants.GENERATOR_PRICE);
-      setGenerators([...generators, 1]);
-    }
-  }, [generators]);
+  const handleBuyGenerator = useCallback(() => {
+    playPurchaseSound();
+    gameLogic.handleBuyGeneratorClick();
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorClick]);
 
-  const handleGeneratorClick = useCallback(
-    (generatorIndex: number) => {
-      setBalance(balance + generators[generatorIndex]);
-      const nextGenerators = Array.from(generators);
-      nextGenerators[generatorIndex] = 0;
-      setGenerators(nextGenerators);
-    },
-    [generators]
-  );
-  const hendleVibrationOn = useCallback(() => {
-    setBalance(balance - Constants.VIBRATION_PRICE);
-    setIsVibration(!isVibration);
-  }, [balance, isVibration]);
+  const handleBuyGeneratorControll = useCallback(() => {
+    playPurchaseSound();
+    gameLogic.handleBuyGeneratorControllClick();
+  }, [playPurchaseSound, gameLogic.handleBuyGeneratorControllClick]);
 
-  const handleBuyGoldClick = useCallback(() => {
-    if (canBuyGold) {
-      setBalance(balance - Constants.GOLD_PRICE);
-      setGoldBalance(goldBalance + 1);
-    }
-  }, [balance, goldBalance, canBuyGold]);
-
-  const handleControllClick = useCallback(
-    (controllId: string) => {
-      if (controllId === "generator") {
-        let deltaBalance = 0;
-        for (let i = 0; i < generators.length; i += 1) {
-          deltaBalance += generators[i];
-        }
-        setBalance(balance + deltaBalance);
-        setGenerators(generators.map(() => 0));
-      }
-    },
-    [balance, generators, setBalance, setGenerators]
-  );
-
-  const handleBuyGeneratorControllClick = useCallback(() => {
-    if (canBuyGeneratorControll) {
-      setBalance(balance - Constants.CONTROLL_GENERATOR_PRICE);
-      setControlls({
-        ...controlls,
-        generator: {},
-      });
-    }
-  }, [balance, controlls, setBalance, setControlls, canBuyGeneratorControll]);
-
-  const handleBuyGeneratorPowerClick = useCallback(() => {
-    if (canBuyGeneratorPower) {
-      setBalance(balance - NEXT_GENERATOR_POWER_PRICE);
-      setGeneratorsPower(generatorsPower + 1);
-    }
-  }, [
-    canBuyGeneratorPower,
-    generatorsPower,
-    balance,
-    NEXT_GENERATOR_POWER_PRICE,
-  ]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      if (generators) {
-        const nextGenerators = generators.map((it) => {
-          if (it + 1 > 999) {
-            return 999;
-          }
-          return it + generatorsPower;
-        });
-        setGenerators(nextGenerators);
-      }
-    }, Constants.GENERATORS_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [generators, generatorsPower]);
-
-  useEffect(() => {
-    if (isVibration) {
-      Vibration.vibrate(1);
-    }
-  }, [balance, isVibration]);
+  const handleBuyGold = useCallback(() => {
+    playPurchaseSound();
+    gameLogic.handleBuyGoldClick();
+  }, [playPurchaseSound, gameLogic.handleBuyGoldClick]);
 
   return (
     <View style={styles.App}>
-      <View style={styles.score_wrapper}>
-        <View style={styles.score_title}>
-          <Text style={styles.titleText}>Balance</Text>
-        </View>
-        <Scoreboard goldBalance={goldBalance} balance={balance} />
-      </View>
+      <Header
+        balanceTitle={getText('balance')}
+        goldBalance={gameLogic.goldBalance}
+        balance={gameLogic.balance}
+        styles={styles}
+        backToMenuText={getText('backToMenu')}
+        onBackToMenu={onBackToMenu}
+      />
+
       <View style={styles.score_components}>
         <Stats
-          clickerPower={clickerPower}
-          generatorsCount={generators.length}
+          clickerPower={gameLogic.clickerPower}
+          generatorsCount={gameLogic.generators.length}
+          titleOne={getText('stats', 0)}
+          titleTwo={getText('stats', 1)}
         />
         <Controlls
-          controlls={controlls}
-          clickerPower={clickerPower}
+          controlls={gameLogic.controlls}
+          clickerPower={gameLogic.clickerPower}
           onClickerClick={handleClickerClick}
-          onControllClick={handleControllClick}
-          canSumGenerators={canSumGenerators}
+          onControllClick={gameLogic.handleControllClick}
+          canSumGenerators={gameLogic.canSumGenerators}
+          titleOne={getText('controls', 0)}
+          titleTwo={getText('controls', 1)}
         />
         <View style={styles.generators_wrapper}>
           <Generators
-            generators={generators}
-            generatorsPower={generatorsPower}
-            handleClick={handleGeneratorClick}
+            generators={gameLogic.generators}
+            handleClick={gameLogic.handleGeneratorClick}
+            isGeneratorsPower={gameLogic.isGeneratorsPower}
           />
         </View>
       </View>
-      <View style={styles.content_wrapper}>
-        <View style={styles.content_wrapper_item}>
-          <ButtonSkills
-            onPress={handleBuyGeneratorPowerClick}
-            disabled={!canBuyGeneratorPower}
-            constants={NEXT_GENERATOR_POWER_PRICE}
-            title={"Buy gen +1 Lvl"}
-          />
 
-          <ButtonSkills
-            onPress={handleBuyClickerPower}
-            disabled={balance <= nextClickerPowerPrice}
-            constants={nextClickerPowerPrice}
-            title={"Buy power +1"}
-          />
-        </View>
-        <View style={styles.content_wrapper_item}>
-          <ButtonSkills
-            onPress={handleBuyGeneratorClick}
-            disabled={!canBuyGenerator}
-            constants={Constants.GENERATOR_PRICE}
-            title={"Buy gen"}
-          />
-          <ButtonSkills
-            onPress={handleBuyGeneratorControllClick}
-            disabled={!canBuyGeneratorControll}
-            constants={Constants.CONTROLL_GENERATOR_PRICE}
-            title={"Quick collection"}
-          />
-        </View>
-        <View style={styles.content_wrapper_item}>
-          <ButtonSkills
-            onPress={handleBuyGoldClick}
-            disabled={!canBuyGold}
-            constants={Constants.GOLD_PRICE}
-            title={"Buy gold"}
-          />
-          <ButtonSkills
-            onPress={hendleVibrationOn}
-            disabled={balance <= Constants.VIBRATION_PRICE}
-            constants={Constants.VIBRATION_PRICE}
-            title={`${isVibration ? "Vibration off" : "Vibration on"}`}
-          />
-        </View>
-      </View>
+      <ShopPanel
+        onBuyGeneratorPower={handleBuyGeneratorPower}
+        onBuyClickerPower={handleBuyClickerPower}
+        onBuyGenerator={handleBuyGenerator}
+        onBuyGeneratorControll={handleBuyGeneratorControll}
+        onBuyGold={handleBuyGold}
+        onVibrationToggle={gameLogic.handleVibrationToggle}
+        canBuyGeneratorPower={gameLogic.canBuyGeneratorPower}
+        canBuyClickerPower={gameLogic.balance > gameLogic.nextClickerPowerPrice}
+        canBuyGenerator={gameLogic.canBuyGenerator}
+        canBuyGeneratorControll={gameLogic.canBuyGeneratorControll}
+        canBuyGold={gameLogic.canBuyGold}
+        canToggleVibration={gameLogic.balance > Constants.VIBRATION_PRICE}
+        generatorPowerPrice={gameLogic.nextGeneratorPowerPrice}
+        clickerPowerPrice={gameLogic.nextClickerPowerPrice}
+        generatorPrice={gameLogic.nextBuyGeneratorPrice}
+        buyGenText={getText('buyGen')}
+        buyPowerText={getText('buyPower')}
+        quickCollectionText={getText('quickCollection')}
+        buyGoldText={getText('buyGold')}
+        vibrationText={gameLogic.isVibration ? getText('vibration', 0) : getText('vibration', 1)}
+        isVibration={gameLogic.isVibration}
+        isGeneratorsPower={gameLogic.isGeneratorsPower}
+        styles={styles}
+      />
     </View>
   );
 };

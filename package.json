@@ -1,7 +1,7 @@
 {
   "name": "react_native_clicker.ts",
-  "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "version": "1.0.2",
+  "main": "index.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -9,17 +9,24 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "expo": "~49.0.8",
-    "expo-splash-screen": "^0.20.5",
-    "expo-status-bar": "~1.6.0",
-    "react": "18.2.0",
-    "react-native": "0.72.4",
-    "react-native-web": "^0.19.8"
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/slider": "^5.1.2",
+    "expo": "~54.0.32",
+    "expo-av": "^16.0.8",
+    "expo-splash-screen": "~31.0.13",
+    "expo-status-bar": "~3.0.9",
+    "react": "19.1.0",
+    "react-dom": "^19.1.0",
+    "react-native": "0.81.5",
+    "react-native-reanimated": "^4.2.1",
+    "react-native-web": "^0.21.0",
+    "react-native-worklets": "^0.7.2",
+    "yet": "^0.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0",
-    "@types/react": "~18.2.14",
-    "typescript": "^5.1.3"
+    "@babel/core": "^7.28.6",
+    "@types/react": "~19.1.0",
+    "typescript": "^5.9.2"
   },
   "private": true
 }

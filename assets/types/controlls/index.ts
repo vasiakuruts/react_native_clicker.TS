@@ -4,6 +4,8 @@ export interface IControllsProps {
   onControllClick: (controll: string) => void;
   controlls: IControls;
   canSumGenerators: boolean;
+  titleOne: string;
+  titleTwo: string;
 }
 
 export interface IControls {
