@@ -3,9 +3,33 @@ import { View, Text, Pressable, Animated } from "react-native";
 import { styles } from "./Style";
 import { IGeneratorsProps } from "../../../assets/types/generators";
 
-const GeneratorItem = ({ generator, index, handleClick }: any) => {
+const GeneratorItem = ({ generator, index, handleClick, isGeneratorsPower }: any) => {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
+  const powerGlowAnim = useRef(new Animated.Value(0)).current;
+
+  // Анімація підсвічування при купівлі generator power
+  useEffect(() => {
+    if (isGeneratorsPower) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(powerGlowAnim, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: false,
+          }),
+          Animated.timing(powerGlowAnim, {
+            toValue: 0,
+            duration: 400,
+            useNativeDriver: false,
+          }),
+        ])
+      ).start();
+    } else {
+      powerGlowAnim.stopAnimation();
+      powerGlowAnim.setValue(0);
+    }
+  }, [isGeneratorsPower]);
 
   useEffect(() => {
     // Pulse анімація коли генератор майже повний (>50% від максимуму)
@@ -54,6 +78,16 @@ const GeneratorItem = ({ generator, index, handleClick }: any) => {
     ],
   });
 
+  const borderColor = powerGlowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ["rgba(255, 215, 0, 0)", "rgba(255, 215, 0, 1)"],
+  });
+
+  const borderWidth = powerGlowAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 4],
+  });
+
   return (
     <Animated.View
       style={{
@@ -64,6 +98,8 @@ const GeneratorItem = ({ generator, index, handleClick }: any) => {
         style={{
           ...styles.generator_item,
           backgroundColor,
+          borderColor,
+          borderWidth,
         }}
       >
         <Pressable
@@ -82,8 +118,8 @@ const GeneratorItem = ({ generator, index, handleClick }: any) => {
   );
 };
 
-export default function Generators(props: IGeneratorsProps) {
-  const { generators, handleClick } = props;
+export default function Generators(props: IGeneratorsProps & { isGeneratorsPower?: boolean }) {
+  const { generators, handleClick, isGeneratorsPower } = props;
 
   return (
     <View style={styles.generators}>
@@ -93,6 +129,7 @@ export default function Generators(props: IGeneratorsProps) {
           generator={generator}
           index={index}
           handleClick={handleClick}
+          isGeneratorsPower={isGeneratorsPower}
         />
       ))}
     </View>

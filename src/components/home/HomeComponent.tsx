@@ -97,6 +97,7 @@ export const HomeComponent: FC<HomeComponentProps> = ({
           <Generators
             generators={gameLogic.generators}
             handleClick={gameLogic.handleGeneratorClick}
+            isGeneratorsPower={gameLogic.isGeneratorsPower}
           />
         </View>
       </View>
