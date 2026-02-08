@@ -23,8 +23,11 @@ export const HomeComponent: FC<HomeComponentProps> = ({
   playClickSound,
   playPurchaseSound,
 }): JSX.Element => {
-  const { lang, changeLang, getText } = useLanguage();
   const gameLogic = useGameLogic();
+  const { getText } = useLanguage({
+    initialLang: gameLogic.lang as 0 | 1 | 2,
+    onLangChange: gameLogic.handleLangChange,
+  });
 
   useEffect(() => {
     if (shouldLoadGame) {
@@ -66,8 +69,6 @@ export const HomeComponent: FC<HomeComponentProps> = ({
   return (
     <View style={styles.App}>
       <Header
-        lang={lang}
-        onChangeLang={changeLang}
         balanceTitle={getText('balance')}
         goldBalance={gameLogic.goldBalance}
         balance={gameLogic.balance}

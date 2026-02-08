@@ -1,11 +1,8 @@
 import React, { FC } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import ButtonLang from '../button_lang';
 import Scoreboard from '../scoreboard';
 
 interface HeaderProps {
-  lang: number;
-  onChangeLang: () => void;
   balanceTitle: string;
   goldBalance: number;
   balance: number;
@@ -15,8 +12,6 @@ interface HeaderProps {
 }
 
 export const Header: FC<HeaderProps> = ({
-  lang,
-  onChangeLang,
   balanceTitle,
   goldBalance,
   balance,
@@ -26,8 +21,8 @@ export const Header: FC<HeaderProps> = ({
 }) => {
   return (
     <View style={styles.score_wrapper}>
-      <View style={headerStyles.topRow}>
-        {onBackToMenu && backToMenuText && (
+      {onBackToMenu && backToMenuText && (
+        <View style={headerStyles.topRow}>
           <TouchableOpacity
             style={headerStyles.backButton}
             onPress={onBackToMenu}
@@ -35,11 +30,8 @@ export const Header: FC<HeaderProps> = ({
           >
             <Text style={headerStyles.backButtonText}>{backToMenuText}</Text>
           </TouchableOpacity>
-        )}
-        <View style={headerStyles.langButton}>
-          <ButtonLang onPress={onChangeLang} constants={lang} />
         </View>
-      </View>
+      )}
       <View style={styles.score_title}>
         <Text style={styles.titleText}>{balanceTitle}</Text>
       </View>
@@ -67,9 +59,6 @@ const headerStyles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontFamily: 'orbitron-bold',
-  },
-  langButton: {
-    marginLeft: 'auto',
   },
 });
 

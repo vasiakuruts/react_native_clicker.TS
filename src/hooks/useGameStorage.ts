@@ -14,6 +14,7 @@ export interface GameState {
   generators: IGeneratorItem[];
   controlls: IControls;
   isVibration: boolean;
+  lang: number; // 0 - UA, 1 - EN, 2 - DE
   // Статистика
   totalClicks: number;
   totalSpent: number;

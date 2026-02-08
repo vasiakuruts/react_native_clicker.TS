@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Modal } from 'react-native';
 import { styles } from './Style';
 import { useLanguage } from '../../hooks/useLanguage';
 import { useGameStorage } from '../../hooks/useGameStorage';
-import ButtonLang from '../button_lang';
+import type { LanguageIndex } from '../../constants/languages';
 
 interface MainMenuProps {
   onNewGame: () => void;
@@ -18,15 +18,17 @@ export const MainMenu: FC<MainMenuProps> = ({
   onResetGame,
   onSettings,
 }) => {
-  const { lang, changeLang, getText } = useLanguage();
   const { checkSaveExists, loadGame } = useGameStorage();
   const [hasSave, setHasSave] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [savedLang, setSavedLang] = useState<LanguageIndex>(0);
 
   // Статистика
   const [totalClicks, setTotalClicks] = useState<number>(0);
   const [totalSpent, setTotalSpent] = useState<number>(0);
   const [totalEarned, setTotalEarned] = useState<number>(0);
+
+  const { getText } = useLanguage({ initialLang: savedLang });
 
   useEffect(() => {
     const checkSave = async () => {
@@ -36,7 +38,7 @@ export const MainMenu: FC<MainMenuProps> = ({
     checkSave();
   }, [checkSaveExists]);
 
-  // Завантаження статистики
+  // Завантаження статистики та мови
   useEffect(() => {
     const loadStats = async () => {
       const savedState = await loadGame();
@@ -44,6 +46,7 @@ export const MainMenu: FC<MainMenuProps> = ({
         setTotalClicks(savedState.totalClicks || 0);
         setTotalSpent(savedState.totalSpent || 0);
         setTotalEarned(savedState.totalEarned || 0);
+        setSavedLang((savedState.lang ?? 0) as LanguageIndex);
       }
     };
     loadStats();
@@ -65,10 +68,6 @@ export const MainMenu: FC<MainMenuProps> = ({
 
   return (
     <View style={styles.container}>
-      <View style={{ position: 'absolute', top: 40, right: 20 }}>
-        <ButtonLang onPress={changeLang} constants={lang} />
-      </View>
-
       <Text style={styles.title}>{getText('menuTitle')}</Text>
       {!hasSave ? 
         <TouchableOpacity

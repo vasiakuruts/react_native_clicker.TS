@@ -1,9 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { styles } from './Style';
 import { useLanguage } from '../../hooks/useLanguage';
+import { useGameStorage } from '../../hooks/useGameStorage';
 import ButtonLang from '../button_lang';
+import type { LanguageIndex } from '../../constants/languages';
 
 interface SoundContextType {
   settings: {
@@ -24,7 +26,35 @@ interface SettingsProps {
 }
 
 export const Settings: FC<SettingsProps> = ({ onBack, soundContext }) => {
-  const { lang, changeLang, getText } = useLanguage();
+  const { loadGame, saveGame } = useGameStorage();
+  const [savedLang, setSavedLang] = useState<LanguageIndex>(0);
+
+  // Завантаження мови при монтуванні
+  useEffect(() => {
+    const loadLang = async () => {
+      const savedState = await loadGame();
+      if (savedState) {
+        setSavedLang((savedState.lang ?? 0) as LanguageIndex);
+      }
+    };
+    loadLang();
+  }, [loadGame]);
+
+  // Збереження мови при зміні
+  const handleLangChange = async (newLang: LanguageIndex) => {
+    setSavedLang(newLang);
+    const savedState = await loadGame();
+    if (savedState) {
+      savedState.lang = newLang;
+      await saveGame(savedState);
+    }
+  };
+
+  const { lang, changeLang, getText } = useLanguage({
+    initialLang: savedLang,
+    onLangChange: handleLangChange,
+  });
+
   const {
     settings,
     toggleSound,

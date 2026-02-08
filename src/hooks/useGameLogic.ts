@@ -17,6 +17,7 @@ export const useGameLogic = () => {
   const [generators, setGenerators] = useState<IGeneratorItem[]>([]);
   const [controlls, setControlls] = useState<IControls>({});
   const [isVibration, setIsVibration] = useState<boolean>(false);
+  const [lang, setLang] = useState<number>(0);
 
   // Статистика
   const [totalClicks, setTotalClicks] = useState<number>(0);
@@ -147,6 +148,7 @@ export const useGameLogic = () => {
       setGenerators(savedState.generators);
       setControlls(savedState.controlls);
       setIsVibration(savedState.isVibration);
+      setLang(savedState.lang ?? 0);
       setTotalClicks(savedState.totalClicks || 0);
       setTotalSpent(savedState.totalSpent || 0);
       setTotalEarned(savedState.totalEarned || 0);
@@ -167,6 +169,7 @@ export const useGameLogic = () => {
       generators,
       controlls,
       isVibration,
+      lang,
       totalClicks,
       totalSpent,
       totalEarned,
@@ -181,6 +184,7 @@ export const useGameLogic = () => {
     generators,
     controlls,
     isVibration,
+    lang,
     totalClicks,
     totalSpent,
     totalEarned,
@@ -198,10 +202,15 @@ export const useGameLogic = () => {
     setGenerators([]);
     setControlls({});
     setIsVibration(false);
+    setLang(0);
     setTotalClicks(0);
     setTotalSpent(0);
     setTotalEarned(0);
   }, [clearSave]);
+
+  const handleLangChange = useCallback((newLang: number) => {
+    setLang(newLang);
+  }, []);
 
   // Ефекти
   useEffect(() => {
@@ -241,6 +250,7 @@ export const useGameLogic = () => {
     generators,
     controlls,
     isVibration,
+    lang,
     totalClicks,
     totalSpent,
     totalEarned,
@@ -258,6 +268,7 @@ export const useGameLogic = () => {
     isVibration,
     isGeneratorsPower,
     isLoaded,
+    lang,
 
     // Статистика
     totalClicks,
@@ -284,6 +295,7 @@ export const useGameLogic = () => {
     handleControllClick,
     handleBuyGeneratorControllClick,
     handleBuyGeneratorPowerClick,
+    handleLangChange,
 
     // Методи збереження
     handleLoadGame,
